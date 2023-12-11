@@ -1,7 +1,8 @@
 {
   "name": "zestflix",
   "version": "1.0.0",
-  "description": "",
+  "description": "movie booking application",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "build": "cd frontend && npm install && npm run build",
