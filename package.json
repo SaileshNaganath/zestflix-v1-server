@@ -1,0 +1,23 @@
+{
+  "name": "zestflix",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SaileshNaganath/zestflix.git"
+  },
+  "keywords": [
+    "movie",
+    "booking"
+  ],
+  "author": "Sailesh Naganath",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SaileshNaganath/zestflix/issues"
+  },
+  "homepage": "https://github.com/SaileshNaganath/zestflix#readme"
+}
