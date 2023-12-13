@@ -8,11 +8,11 @@ import {
 
 const paymentRouter = express.Router();
 
-paymentRouter.route('/payments')
+paymentRouter.route('/')
                 .get(isAuth,getAllPayments)
                 .post(isAuth,createPayment);
 
-paymentRouter.route('/payments/:id')
+paymentRouter.route('/:id')
                 .get(isAuth,getPaymentById);
 
 export default paymentRouter;

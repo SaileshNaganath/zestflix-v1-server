@@ -3,7 +3,7 @@ import {isAuth} from '../middlewares/authMiddlewares.js';
 import {verifyBookingReq} from "../middlewares/bookingMiddlewares.js";
 import {
     getAllBookings,
-    createBookings,
+    createBooking,
     getBookingById,
     updateBooking,
     deleteBooking
@@ -11,11 +11,11 @@ import {
 
 const bookingRouter = express.Router();
 
-bookingRouter.route('/bookings')
+bookingRouter.route('/')
                 .get(isAuth,getAllBookings)
-                .post(isAuth,verifyBookingReq,createBookings);
+                .post(isAuth,verifyBookingReq,createBooking);
 
-bookingRouter.route('/bookings/:id')
+bookingRouter.route('/:id')
                 .get(isAuth,getBookingById)
                 .put(isAuth,updateBooking)
                 .delete(isAuth,deleteBooking);

@@ -2,36 +2,35 @@ import express from 'express';
 import {isAuth,isAdmin,isAdminOrClient} from '../middlewares/authMiddlewares.js';
 import {
     getAllTheatres,
+    getTheatre,
     getMoviesInTheatre,
     getTheatreById,
     addTheatre,
     addMovieToTheatre,
     updateTheatre,
     deleteTheatre,
-    deleteMovieFromTheatre,
-    allTheatres
+    deleteMovieFromTheatre
 } from '../controllers/theatreController.js';
 
-const theaterRouter = express.Router();
+const theatreRouter = express.Router();
 
-theaterRouter.route('/theatres')
-                .get(getAllTheatres)
-                .post(isAuth,isAdminOrClient,addTheatre);
+theatreRouter.route('/')
+                .get(isAuth,getAllTheatres)
+                .get(isAuth,getTheatre)
+                .post(isAuth,isAdmin,addTheatre);
 
-theaterRouter.route('/theatres/:theatreId')
-                .get(getTheatreById)
+theatreRouter.route('/:theatreId')
+                .get(isAuth,getTheatreById)
                 .put(isAdmin,isAdminOrClient,updateTheatre)
-                .delete(isAuth,isAdminOrClient,deleteTheatre);
+                .delete(isAuth,isAdmin,deleteTheatre);
 
-theaterRouter.route('/theatres/:theatreName/:movieId')
+theatreRouter.route('/:theatreName/:movieId')
                 .get(isAuth,getMoviesInTheatre);
             
-theaterRouter.route('/theatre/movies/:theatreId')
-                .put(isAuth,isAdmin,addMovieToTheatre)
-                .delete(isAuth,isAdmin,deleteMovieFromTheatre);
+theatreRouter.route('/movies/:theatreId')
+                .put(isAuth,isAdminOrClient,addMovieToTheatre)
+                .delete(isAuth,isAdminOrClient,deleteMovieFromTheatre);
+                
 
-theaterRouter.route('/allTheatres')
-                .get(allTheatres);
-
-export default theaterRouter;
+export default theatreRouter;
 

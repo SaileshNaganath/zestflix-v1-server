@@ -1,7 +1,8 @@
 import express from 'express';
-import {isAuth,isAdmin} from '../middlewares/authMiddlewares.js';
+import {isAuth,isAdmin, isAdminOrClient} from '../middlewares/authMiddlewares.js';
 import {
     getAllMovies,
+    createMovie,
     getMovieById,
     updateMovie,
     deleteMovie
@@ -10,15 +11,15 @@ import {
 
 const movieRouter = express.Router();
 
-movieRouter.route('/movies')
-            .get(getAllMovies)
-            .post(isAuth,isAdmin,createMovie);
+movieRouter.route('/')
+            .get(isAuth,getAllMovies)
+            .post(isAuth,isAdminOrClient,createMovie);
 
-movieRouter.route('/movieId')
-            .get(getMovieById);
+movieRouter.route('/:movieId')
+            .get(isAuth,getMovieById);
 
 movieRouter.route('/:id')
             .put(isAuth,isAdmin,updateMovie)
-            .delete(isAuth,isAdmin,deleteMovie);
+            .delete(isAuth,isAdminOrClient,deleteMovie);
 
 export default movieRouter;
