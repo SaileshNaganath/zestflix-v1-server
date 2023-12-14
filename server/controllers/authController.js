@@ -37,7 +37,7 @@ const signup = asyncHandler(async(req,res)=>{
 
     const createdUser = await user.save();
     if(createdUser){
-        res.status(201).send({
+        return res.status(201).send({
             name: createdUser.name,
             userId: createdUser.userId,
             email: createdUser.email,
@@ -47,36 +47,33 @@ const signup = asyncHandler(async(req,res)=>{
             token: generateToken(user._id),
         })
     }else{
-        res.status(406).send({message:'Invalid user data'});
+        return res.status(406).send({message:'Invalid user data'});
     }
 })
 
-// @desc    Auth user & get token
+// @desc    Auth user & compare token
 // @route   POST /api/users/login
 // @access  Public
 const login = asyncHandler(async(req,res)=>{
     const user = await User.findOne({email:req.body.email});
     if(user){
-        res.status(200).send({
-            message:'User is Valid'
-        });
         if(bcrypt.compareSync(req.body.password , user.password)){
-            res.send({
+            return res.status(200).send({
                 _id:user._id,
                 name: user.name,
                 email: user.email,
                 userType: user.userType,
                 userStatus: user.userStatus,
                 token: generateToken(user._id),
+                message:'User is Valid'
             })
-            return;
         }else{
-            res.status(406).send({
+           return res.status(406).send({
                 message:'Invalid Password'
             })
         }
     }
-    res.status(406).send({message:'Invalid email'});
+    return res.status(406).send({message:'Invalid email'});
 })
 
 export{

@@ -7,7 +7,7 @@ import Movie from '../models/movieModels.js';
 // @access  Private/ Authorized person
 const getAllTheatres = asyncHandler(async(req,res)=>{
     const theatre = await Theatre.find({});
-    res.status(200).send(theatre);
+    return res.status(200).send(theatre);
 })
 
 // @desc    Get theatres by query 
@@ -25,7 +25,7 @@ const getTheatre = asyncHandler(async(req,res)=>{
         queryObj.pinCode = req.query.pinCode
       }
       const theatres = await Theatre.find(queryObj)
-      res.status(200).send(theatres);
+      return res.status(200).send(theatres);
 
 })
 
@@ -37,11 +37,11 @@ const getMoviesInTheatre = asyncHandler(async(req,res)=>{
     const movie = await Movie.findOne({_id:req.params.movieId});
 
     if(theatre.movies.includes(movie._id)){
-       res.status(200).send({
+       return res.status(200).send({
         message:'Movie is available' 
        }) 
     } else {
-        res.status(404).send({
+        return res.status(404).send({
             message:'Movie is not present'
         })
       }
@@ -53,9 +53,9 @@ const getMoviesInTheatre = asyncHandler(async(req,res)=>{
 const getTheatreById = asyncHandler(async(req,res)=>{
     const theatre = await Theatre.findById(req.params.theatreId);
     if(theatre){
-        res.status(200).send(theatre);
+        return res.status(200).send(theatre);
     }else{
-        res.status(404).send({
+        return res.status(404).send({
             message:'Theatre not found'
         })
     }
@@ -65,24 +65,24 @@ const getTheatreById = asyncHandler(async(req,res)=>{
 // @route   POST /api/theatres
 // @access  Private/ Admin 
 const addTheatre = asyncHandler(async(req,res)=>{
-    const theatre ={
+    const theatreRequest ={
         name: req.body.name,
         city: req.body.city,
         description: req.body.description,
         pinCode: req.body.pinCode,
         ownerId: req.body.ownerId,
     }
-
-  try {
-    if (!theatre) {
-      res.status(406).send('Please fill all fields to add a theatre...')
-    } else if (theatre) {
-      const theatre = Theatre.create(theatre)
-      res.status(201).send('Theatre is added successfully')
+      try {
+        if (!theatreRequest) {
+          return res.status(406).send('Please fill all fields to add a theatre...')
+        }else{
+        const newTheatre = Theatre.create(theatreRequest);
+        return res.status(201).send(`${newTheatre.name} is created`)
+        }
+    } catch (error) {
+      return res.status(500).send('Internal Server error')
     }
-  } catch (error) {
-    res.status(500).send('Internal Server error')
-  }
+    
 })
 
 // @desc    Add a movie to a theatre 
@@ -101,9 +101,9 @@ const addMovieToTheatre = asyncHandler(async(req,res)=>{
             if (!theatre.movies.includes(movieId)) {
               theatre.movies.push(movieId);
               theatre.save();
-              res.status(202).send(theatre);
+              return res.status(202).send(theatre);
             } else if (theatre.movies.includes(movieId)) {
-              res.status(400).send({
+              return res.status(400).send({
                 message:'Movie is already present'
             });
             }
@@ -111,7 +111,7 @@ const addMovieToTheatre = asyncHandler(async(req,res)=>{
         })
       }
     } catch (error) {
-      res.status(500).send({
+      return res.status(500).send({
         message:'Internal Server Error'
     });
     }
@@ -129,14 +129,14 @@ const updateTheatre = asyncHandler(async(req,res)=>{
                 message: "Theatre not found"
               })
         }
-        theatre.name = req.body.name || theatre.name
+      theatre.name = req.body.name || theatre.name
       theatre.description = req.body.description || theatre.description
       theatre.city = req.body.city || theatre.city
       theatre.pinCode = req.body.pinCode || theatre.pinCode
   
       let updatedTheatre = await theatre.save()
   
-      res.status(202).send(updatedTheatre);
+      return res.status(202).send(updatedTheatre);
     }
     catch (error) {
         res.status(500).send('Internal Server error')
@@ -150,11 +150,11 @@ const deleteTheatre = asyncHandler(async(req,res)=>{
     const theatre = await Theatre.findById(req.params.theatreId);
     if(theatre){
         await Theatre.deleteOne(theatre);
-        res.status(202).send({
+        return res.status(202).send({
             message:'Theatre Deleted'
         });
     }else{
-        res.status(404).send({
+        return res.status(404).send({
             message:'Theatre not found'
         })
     }
@@ -170,7 +170,7 @@ const deleteMovieFromTheatre = asyncHandler(async(req,res)=>{
 
   try {
     if (!theatreId) {
-      res.status(406).send({
+      return res.status(406).send({
         message:'Please enter a Valid theatreId for removing Movie from Theatre...'
       })
     } else {
@@ -179,13 +179,13 @@ const deleteMovieFromTheatre = asyncHandler(async(req,res)=>{
       if (theatre.movies.includes(movieId)) {
         theatre.deleteOne(movieId);
         theatre.save();
-        res.status(200).send({
+        return res.status(200).send({
             message:'Movie Removed Successfully'
         });
       }
     }
   } catch (error) {
-    res.status(500).send({
+    return res.status(500).send({
         message:'Internal Server Error'
     })
   }

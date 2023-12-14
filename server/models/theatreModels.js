@@ -36,7 +36,7 @@ const theatreModel = new mongoose.Schema(  {
     },
     ownerId: {
       type: mongoose.SchemaTypes.ObjectId,
-      required: true,
+      //required: true,
       ref: 'Users',
     },
   },

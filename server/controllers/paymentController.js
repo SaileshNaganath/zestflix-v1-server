@@ -19,9 +19,9 @@ const getAllPayments = asyncHandler(async(req,res)=>{
   
     try {
       const payment = await Payment.find(queryObj)
-      res.status(200).send(payment)
+      return res.status(200).send(payment)
     } catch (err) {
-      res.status(500).send('Internal Server Error')
+      return res.status(500).send('Internal Server Error')
     }
 })
 
@@ -40,14 +40,14 @@ const getPaymentById = asyncHandler(async(req,res)=>{
         booking !== null &&
         booking.userId !== user._id
       ) {
-        res.status(404).send({
+        return res.status(404).send({
           message: 'Access denied'
         })
-        return
+        
       }
-      res.status(200).send(payments);
+      return res.status(200).send(payments);
     } catch (err) {
-      res.status(500).send({
+      return res.status(500).send({
         message: 'Internal error while searching for the payment'
       })
     }
@@ -90,8 +90,8 @@ const createPayment = asyncHandler(async(req,res)=>{
 
       return res.status(201).send(payment);
     } catch (err) {
-      console.log(err.message)
-      res.status(500).send({
+      
+      return res.status(500).send({
         message: 'Internal server error while creating the booking'
       })
     }

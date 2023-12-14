@@ -12,7 +12,7 @@ seedRouter.get('/', async (req, res) => {
   const createdUsers = await User.insertMany(data.users);
   await Movie.deleteMany({});
   const createdMovies = await Movie.insertMany(data.movies);
-  await Theatre.deleteMany({});
+  //await Theatre.deleteMany({});
   await Booking.deleteMany({});
   res.send({ createdUsers , createdMovies });
 });

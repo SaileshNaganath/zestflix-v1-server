@@ -4,50 +4,50 @@ import {userTypesObject} from "../utils/constants.js";
 import User from '../models/userModels.js';
 
 export const isAuth = asyncHandler(async(req,res,next)=>{
-    let token ; 
 
-    const authorization = req.headers.authorization;
-
-    if(authorization && authorization.startsWith('Bearer')){
         try{
-            let token = authorization.slice(7,authorization.length);
-            const decoded = jwt.verify(token , process.env.SECRET_KEY);
+            let token = req.headers.authorization;
 
-            req.user = await User.findById(decoded,id).select('-password');
+            if(token){
+
+              token = token.split(' ')[1];
+              let decoded = jwt.verify(token , process.env.SECRET_KEY);
+  
+              req.user = await User.findById(decoded.id).select('-password');
+              
+              next();
+            }
+            else{
+              res.status(406).send({
+                message:'Token failed!'
+              })
+            }
             
-            next();
         }catch(err){
             res.status(401).send({
-                message:"Token failed!"
+                message:"Token not provided!"
             });
         }
-    }
-    if(!token){
-        res.status(401).send({
-            message:'No token provided!'
-        })
-    }
-
-});
+    });
 
 export const isAdmin = asyncHandler(async(req,res,next) =>{
-  const user = await User.findOne({userId: req.userId});
+  const user = await User.findOne({user: req.user});
 
-    if (user && user.userType == userTypesObject.userTypes.admin) {
-        next();
+    if (user.userType === userTypesObject.userTypes.admin) {
+         next();
       } else {
-        res.status(401).send({ message: 'Invalid Admin Token' });
+        return res.status(401).send({ message: 'Invalid Admin Token' });
       }
 }) ;
 
   
 export const isAdminOrClient = asyncHandler(async(req,res,next) =>{
-  const user = await User.findOne({userId: req.userId});
+  const user = await User.findOne({user: req.user});
     if (user &&
-      (user.userType == userTypesObject.userTypes.admin ||
-        user.userType == userTypesObject.userTypes.client)) {
+      (user.userType === userTypesObject.userTypes.admin ||
+        user.userType === userTypesObject.userTypes.client)) {
         next();
       } else {
-        res.status(401).send({ message: 'Invalid Admin/Seller Token' });
+        res.status(401).send({ message: 'Invalid Token' });
       }
 });

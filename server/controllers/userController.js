@@ -6,7 +6,7 @@ import User from "../models/userModels.js";
 // @access  Private/ Admin
 const getAllUsers = asyncHandler(async(req,res)=>{
     const users = await User.find({});
-    res.status(200).send(users);
+    return res.status(200).send(users);
 })
 
 // @desc    Get user profile
@@ -16,9 +16,9 @@ const getProfile = asyncHandler(async(req,res)=>{
     const user = await User.findById(req.user._id);
 
     if(user){
-        res.status(200).send(user);
+        return res.status(200).send(user);
     }else{
-        res.status(404).send({
+        return res.status(404).send({
             message:'User not found'
         });
     }
@@ -45,7 +45,7 @@ const updateProfile = asyncHandler(async(req,res)=>{
           }
           const updatedUser = await user.save();
 
-          res.status(202).send({
+          return res.status(202).send({
             _id: updatedUser._id,
             name: updatedUser.name,
             email: updatedUser.email,
@@ -54,13 +54,13 @@ const updateProfile = asyncHandler(async(req,res)=>{
             token: generateToken(updatedUser._id),
           });
     }else{
-        res.status(404).send({
+        return res.status(404).send({
             message:'User not found'
         });
     }
   }
   catch(error){
-    res.status(500).send({message:'Internal Server Error'});
+    return res.status(500).send({message:'Internal Server Error'});
   }
     
 })
@@ -72,9 +72,9 @@ const getUserById = asyncHandler (async (req,res)=>{
     const user = await User.findById(req.params.id).select('-password')
   
     if (user) {
-      res.status(200).send(user);
+      return res.status(200).send(user);
     } else {
-      res.status(404).send({message:'User not found'})
+      return res.status(404).send({message:'User not found'})
     }
   })
 
@@ -99,16 +99,16 @@ try{
       }
       const updatedUser = await user.save();
 
-      res.status(202).send({updatedUser});
+      return res.status(202).send({updatedUser});
 }else{
-    res.status(404).send({
+    return res.status(404).send({
         message:'User not found'
     });
 }
 
 }
 catch(error){
-  res.status(500).send({message:'Internal Server Error'});
+  return res.status(500).send({message:'Internal Server Error'});
 }
 
 })
@@ -121,9 +121,9 @@ const deleteUser = asyncHandler (async (req,res)=>{
   
     if (user) {
       await User.deleteOne(user)
-      res.status(200).send({ message: 'User has been removed' });
+      return res.status(200).send({ message: 'User has been removed' });
     } else {
-      res.status(404).send({message:'User not found'});
+      return res.status(404).send({message:'User not found'});
     }
   })
 

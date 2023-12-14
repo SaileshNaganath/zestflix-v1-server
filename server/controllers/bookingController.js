@@ -23,9 +23,9 @@ const createBooking = asyncHandler(async(req,res)=>{
       }
       try {
         const booking = await Booking.create(bookingObject)
-        res.status(201).send(booking);
+        return res.status(201).send(booking);
       } catch (err) {
-        res.status(500).send({
+        return res.status(500).send({
           message: 'Internal error while creating the booking'
         })
       }
@@ -47,7 +47,7 @@ const getAllBookings = asyncHandler(async(req,res)=>{
       }
     
       const booking = await Booking.find(queryObj)
-      res.status(200).send(booking)
+      return res.status(200).send(booking)
     
 })
 
@@ -66,9 +66,9 @@ const getBookingById = asyncHandler(async(req,res)=>{
           message: 'Access denied',
         })
       }
-      res.status(200).send(bookings)
+      return res.status(200).send(bookings)
     } catch (err) {
-      res.status(500).send({
+      return res.status(500).send({
         message: 'Internal error while searching for the booking by Id',
       })
     }
@@ -83,20 +83,19 @@ const updateBooking = asyncHandler(async(req,res)=>{
       _id: req.params.id,
     })
     if (booking === undefined || booking === null) {
-      res.status(404).send({
+      return res.status(404).send({
         message: 'Booking not found',
       })
-      return
     }
   
     if (
       user.userType != userTypesObject.userTypes.admin &&
       booking.userId != user._id
     ) {
-      res.status(404).send({
+      return res.status(404).send({
         message: 'Access Denied.',
       })
-      return
+      
     }
     booking.theatreId = req.body.theatreId || booking.theatreId
     booking.movieId = req.body.movieId || booking.movieId
@@ -105,10 +104,9 @@ const updateBooking = asyncHandler(async(req,res)=>{
   
     try {
       const updatedBooking = await booking.save()
-      res.status(201).send(updatedBooking)
+      return res.status(201).send(updatedBooking)
     } catch (err) {
-      console.log(err)
-      res.status(500).send({
+      return res.status(500).send({
         message: 'Internal error while updating the booking',
       })
     }
@@ -121,24 +119,24 @@ const deleteBooking = asyncHandler(async(req,res)=>{
     const user = await User.findOne({ userId: req.userId })
     const booking = await Booking.findOne({ _id: req.params.id })
     if (booking === null) {
-      res.status(404).send({
+      return res.status(404).send({
         message: 'Booking not found',
       })
-      return
+      
     }
     if (booking.userId != user._id) {
-      res.status(404).send({
+      return res.status(404).send({
         message: 'Access Denied.',
       })
-      return
+      
     }
     try {
       await Booking.deleteOne({ _id: req.params.id })
-      res.status(200).send({
+      return res.status(200).send({
         message: 'Booking deleted successfully',
       })
     } catch (err) {
-      res.status(500).send({
+      return res.status(500).send({
         message: 'Internal error while deleting the booking',
       })
     }

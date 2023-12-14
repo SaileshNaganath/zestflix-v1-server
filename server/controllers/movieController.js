@@ -6,7 +6,7 @@ import Movie from '../models/movieModels.js';
 // @access  Private/ Authorized person
 const getAllMovies = asyncHandler(async(req,res)=>{
     const movies = await Movie.find({});
-    res.status(200).send(movies);
+    return res.status(200).send(movies);
 })
 
 // @desc    Create a movie
@@ -27,14 +27,14 @@ const createMovie = asyncHandler(async(req,res)=>{
       }
       try{ 
         if (!movie) {
-        res.status(406).send('please fill all details to add A movie in DB...');
+        return res.status(406).send('please fill all details to add A movie in DB...');
       }else {
         await Movie.create(movie);
-        res.status(201).send('Movie is Successfully added');
+        return res.status(201).send('Movie is Successfully added');
       }
 }
       catch (error) {
-        res.status(500).send('Internal Server error')
+        return res.status(500).send('Internal Server error')
       }
 
 })
@@ -45,9 +45,9 @@ const createMovie = asyncHandler(async(req,res)=>{
 const getMovieById = asyncHandler(async(req,res)=>{
     const movie = await Movie.findById(req.params.id);
      if(movie){
-        res.status(200).send(movie);
+        return res.status(200).send(movie);
      }else{
-        res.status(404).send({message:'Movie is not found'});
+        return res.status(404).send({message:'Movie is not found'});
      }
 })
 
@@ -58,7 +58,7 @@ const updateMovie= asyncHandler(async(req,res)=>{
     const movie = await Movie.findOne(req.params.id);
 try{  
     if (!movie) {
-    res.status(404).send({
+    return res.status(404).send({
       message: 'Movie not found'
     })
   }
@@ -74,10 +74,10 @@ try{
   movie.releaseStatus = req.body.releaseStatus || movie.releaseStatus
 
   const updatedMovie = await movie.save();
-  res.status(202).send(updatedMovie);
+  return res.status(202).send(updatedMovie);
 }
 catch(error){
-    res.status(500).send({message:'Internal server error'});
+    return res.status(500).send({message:'Internal server error'});
 }  
 
 })
@@ -90,9 +90,9 @@ const deleteMovie = asyncHandler(async(req,res)=>{
     const movie = await Movie.findById(req.params.id);
      if(movie){
         await Movie.deleteOne(movie);
-        res.status(200).send('Movie has been removed');
+        return res.status(200).send('Movie has been removed');
      }else{
-        res.status(404).send({message:'Movie is not found'});
+        return res.status(404).send({message:'Movie is not found'});
      }
 })
 
